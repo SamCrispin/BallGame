@@ -1,3 +1,13 @@
+var CANVAS_SIZE = 700,
+    ACC = 0.5,
+    X_ACC = new Vector(ACC, 0),
+    Y_ACC = new Vector(0, ACC),
+    VEL_LIMIT = 10,
+	player = new Player(),
+    enemies = [];
+    bullets = []
+	keys = [];
+
 var KEYS = {
     "LEFT": 37,
     "UP":   38,
@@ -5,44 +15,44 @@ var KEYS = {
     "DOWN": 40
 }
 
-var ball = {
-    xVel: 0,
-    yVel: 0,
-    xAcc: 0,
-    yAcc: 0,
-    x: 100,
-    y: 100,
-
-    move: function() {
-        this.xVel = (this.xVel + this.xAcc).limitMag(VEL_LIMIT);
-        this.yVel = (this.yVel + this.yAcc).limitMag(VEL_LIMIT);
-
-        this.x += this.xVel;
-        this.y += this.yVel;
-
-        console.log("xVel: " + this.xVel + ", x:" + this.x);
-        console.log("yVel: " + this.yVel + ", y:" + this.y);
-
-        this.detectCollisions();
-    }
-
-    detectCollisions: function() {
-        
-    }
-},  
-    keys = [],
-    ACC = 1,
-    VEL_LIMIT = 5;
-
 function setup() {
-    createCanvas(500, 500);
-}
+    createCanvas(CANVAS_SIZE, CANVAS_SIZE);
+    enemies.push(new Enemy());
+    enemies.push(new Enemy());
+    enemies.push(new Enemy());
+}   
 
 function draw() {
     background(0);
     keyHandler();
-    ball.move();
-    circle(ball.x, ball.y, 10);
+    moveBalls();
+    drawPlayer();
+    drawEnemies();
+    drawBullets();
+}
+
+function moveBalls() {
+    player.move();
+    for (var i = 0; i < enemies.length; i++) enemies[i].move();
+}
+
+function drawPlayer() {
+    fill(player.colour);
+    circle(player.pos.x+player.size, player.pos.y+player.size, player.size);
+}
+
+function drawEnemies() {
+    fill(Enemy.colour);
+    for (var i = 0; i < enemies.length; i++) {
+        circle(enemies[i].pos.x+enemies[i].size, enemies[i].pos.y+enemies[i].size, enemies[i].size);
+    }
+}
+
+function drawBullets() {
+    fill(Bullet.colour);
+    for (var i = 0; i < bullets.length; i++) {
+        circle(bullets[i].pos.x+bullets[i].size, bullets[i].y+bullets[i].size, bullets[i].size)
+    }
 }
 
 function keyPressed() {
@@ -54,18 +64,14 @@ function keyReleased() {
 }
 
 function keyHandler() {
-    ball.xAcc = 0;
-    ball.yAcc = 0;
-    for (var i = 0; i < keys.length; i++) {
-        if (keys[i] == KEYS.LEFT) ball.xAcc = -ACC;
-        if (keys[i] == KEYS.RIGHT) ball.xAcc = ACC;
-        if (keys[i] == KEYS.UP) ball.yAcc = -ACC;
-        if (keys[i] == KEYS.DOWN) ball.yAcc = ACC;
+    player.acc.scale(0);
+    if (keys.length == 0 && player.vel.getMagnitude() != 0) {
+        player.acc = player.vel.getMult(-1).getLimit(ACC/2);
     }
-}
-
-Number.prototype.limitMag = function(limit) {
-    if (this.valueOf() > limit) return limit;
-    else if (this.valueOf() < -limit) return -limit;
-    else return this.valueOf();
+    for (var i = 0; i < keys.length; i++) {
+        if (keys[i] == KEYS.LEFT) player.acc.sub(X_ACC);
+        if (keys[i] == KEYS.RIGHT) player.acc.add(X_ACC);
+        if (keys[i] == KEYS.UP) player.acc.sub(Y_ACC);
+        if (keys[i] == KEYS.DOWN) player.acc.add(Y_ACC);
+    }
 }
