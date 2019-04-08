@@ -1,16 +1,16 @@
 class Ball {
-    pos = new Vector(CANVAS_SIZE/2, CANVAS_SIZE/2);
+    pos = new Vector();
     vel = new Vector(0, 0);
     acc = new Vector(0, 0);
    
     constructor(x, y) {
-        if (x) this.pos.x = x;
-        if (y) this.pos.y = y;
+        this.pos.x = (x) ? x : Math.random() * CANVAS_SIZE;
+        this.pos.y = (y) ? y : Math.random() * CANVAS_SIZE;
     }
 
     move = function() {
         if (this.acc.getMagnitude() > 0) this.vel.add(this.acc);
-        this.vel.limit(VEL_LIMIT);
+        this.vel.limit(this.velLimit);
         this.pos.add(this.vel);
 
         this.detectCollisions();

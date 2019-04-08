@@ -22,8 +22,20 @@ class Vector {
 		return new Vector(this.x*scalar, this.y*scalar);
 	}
 	
-	getAngle() {
-		return Math.tan(this.y/this.x);
+	getAngle(x, y) {
+		var theta, dy = y - this.y, dx = x - this.x;
+		if (dy == 0) {
+			theta = (dx < 0) ? Math.PI * 3/2 : Math.PI / 2;
+		} else {
+			if (dx > 0) {
+				if (dy > 0) theta = Math.atan(dx / dy)
+				else theta = Math.PI + Math.atan(dx / dy);
+			} else {
+				if (dy > 0) theta = 2*Math.PI + Math.atan(dx / dy)
+				else theta = Math.PI + Math.atan(dx / dy);
+			}
+		}
+		return theta;
 	}
 	
     scale(scalar) {

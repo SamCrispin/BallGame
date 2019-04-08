@@ -2,11 +2,11 @@ var CANVAS_SIZE = 700,
     ACC = 0.5,
     X_ACC = new Vector(ACC, 0),
     Y_ACC = new Vector(0, ACC),
-    VEL_LIMIT = 10,
-	player = new Player(),
+	player = new Player(CANVAS_SIZE/2, CANVAS_SIZE/2),
     enemies = [];
     bullets = []
-	keys = [];
+	keys = [],
+    enemyHitboxes = [];
 
 var KEYS = {
     "LEFT": 37,
@@ -34,6 +34,7 @@ function draw() {
 function moveBalls() {
     player.move();
     for (var i = 0; i < enemies.length; i++) enemies[i].move();
+    for (var i = 0; i < bullets.length; i++) bullets[i].move();
 }
 
 function drawPlayer() {
@@ -44,19 +45,20 @@ function drawPlayer() {
 function drawEnemies() {
     fill(Enemy.colour);
     for (var i = 0; i < enemies.length; i++) {
-        circle(enemies[i].pos.x+enemies[i].size, enemies[i].pos.y+enemies[i].size, enemies[i].size);
+        if (enemies[i]) ;circle(enemies[i].pos.x+enemies[i].size, enemies[i].pos.y+enemies[i].size, enemies[i].size);
     }
 }
 
 function drawBullets() {
     fill(Bullet.colour);
     for (var i = 0; i < bullets.length; i++) {
-        circle(bullets[i].pos.x+bullets[i].size, bullets[i].y+bullets[i].size, bullets[i].size)
+        if (bullets[i]) circle(bullets[i].pos.x+bullets[i].size, bullets[i].pos.y+bullets[i].size, bullets[i].size)
     }
 }
 
 function keyPressed() {
     if (keyCode >= 37 && keyCode <= 40) keys.push(keyCode);
+    else if (keyCode == 32) player.shoot();
 }
 
 function keyReleased() {
