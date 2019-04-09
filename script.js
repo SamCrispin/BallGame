@@ -17,9 +17,9 @@ var KEYS = {
 
 function setup() {
     createCanvas(CANVAS_SIZE, CANVAS_SIZE);
-    enemies.push(new Enemy());
-    enemies.push(new Enemy());
-    enemies.push(new Enemy());
+    enemies.push(new SmallEnemy());
+    enemies.push(new MediumEnemy());
+    enemies.push(new LargeEnemy());
 }   
 
 function draw() {
